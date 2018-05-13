@@ -1,9 +1,9 @@
 ldap_connection:
-    host: ldap://coding.local
+    host: HOST
     domain: CODING
-    username: admin
-    password: RuckusWyse104
-    basedn: "dc=coding,dc=local"
+    username: USERNAME
+    password: PASSWORD
+    basedn: BASEDN
 
 reports:
   allusers:
