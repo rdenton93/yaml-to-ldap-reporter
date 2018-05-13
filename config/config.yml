@@ -1,0 +1,239 @@
+ldap_connection:
+    host: ldap://coding.local
+    domain: CODING
+    username: admin
+    password: RuckusWyse104
+    basedn: "dc=coding,dc=local"
+
+reports:
+  allusers:
+      name: All Users
+      alias: allusers
+      attributes: 
+          - distinguishedName
+          - objectClass
+          - sAMAccountName
+          - whenCreated
+          - whenChanged
+          - disabled
+          - name
+          - userAccountControl
+          - displayName
+          - mail          
+      query:
+          objectClass: =user
+          objectCategory: =person
+
+  allcomputers:
+      name: All Computers
+      alias: allcomputers
+      attributes: 
+          - name
+          - distinguishedName
+          - objectClass
+          - lastLogon
+          - whenCreated
+          - operatingSystemVersion
+          - operatingSystem
+      query:
+          objectCategory: =computer
+
+  allservers:
+      name: All Servers
+      alias: allservers
+      attributes: 
+          - name
+          - whencreated
+      query:
+          objectCategory: =computer
+          operatingSystem: =*server*
+
+  alldcs:
+      name: All Domain Controllers
+      alias: alldcs
+      attributes: 
+          - name
+          - distinguishedName
+          - objectClass
+      query:
+          'objectCategory': =computer
+          'userAccountControl:1.2.840.113556.1.4.803:': =8192
+  
+  allobjects:
+      name: All Objects
+      alias: allobjects
+      attributes: 
+          - distinguishedName
+          - objectClass
+          - whenCreated
+          - whenChanged
+          - description
+          - name
+          - userAccountControl
+      query:
+          'objectClass': user|computer|group|contact|organizationalUnit
+
+  allcontacts:
+      name: All Contacts
+      alias: allcontacts
+      attributes: 
+          - distinguishedName
+          - givenName
+          - mail
+          - objectClass
+      query:
+          objectClass: =contact
+
+  allgroups:
+      name: All Groups
+      alias: allgroups
+      attributes: 
+          - distinguishedName
+          - givenName
+          - groupType
+          - objectClass
+          - name
+      query:
+          objectCategory: =group
+
+  alladmins:
+      name: All Adminsistrators
+      alias: alladmins
+      attributes: 
+          - objectClass
+          - distinguishedName
+      query:
+          objectClass: =group
+          cn: =Domain Admins
+      return : distinguishedName
+      pipeto: memberof
+
+
+  memberof:
+      name: Member of a specified group
+      alias: memberof
+      attributes: 
+          - objectClass
+          - distinguishedName
+          - givenName
+          - mail
+      query:
+          'memberOf:1.2.840.113556.1.4.1941:': '%q'
+
+  alldomainobjects:
+      name: All Domain Objects
+      alias: alldomainobjects
+      attributes: 
+          - distinguishedName
+          - objectClass
+      query:
+          objectClass: =domain
+
+  disabledusers:
+      name: All Disabled Users Objects
+      alias: alldisabled
+      attributes: 
+          - distinguishedName
+          - givenName
+          - objectClass
+          - mail
+      query:
+          'userAccountControl:1.2.840.113556.1.4.803:': =2
+          'objectCategory': =person
+          'objectClass': =user
+
+  enabledusers:
+      name: All Enabled Users Objects
+      alias: enabledusers
+      attributes: 
+          - distinguishedName
+          - givenName
+          - objectClass
+          - mail
+      query:
+          '!userAccountControl:1.2.840.113556.1.4.803:': =2
+          'objectCategory': =person
+          'objectClass': =user
+
+  notloggedin6mon:
+      name: Not logged in, in 6 months
+      alias: notloggedin6mon
+      attributes: 
+          - distinguishedName
+          - givenName
+          - objectClass
+          - mail
+          - lastLogon
+      query:
+          'objectCategory': '=person'
+          'objectClass': '=user'
+          'lastLogon' :
+              'type' : 'Timestamp'
+              'value' : '- 6 Months'
+              'operator': '<='
+
+  neverloggedin:
+      name: Never logged on
+      alias: neverloggedin
+      attributes: 
+          - distinguishedName
+          - givenName
+          - objectClass
+          - mail
+      query:
+          'objectCategory': '=person'
+          'objectClass': '=user'
+          'lastLogon': '=0'
+
+  deletedobjects:
+      name: Deleted Objects
+      alias: deletedobjects
+      attributes: 
+          - distinguishedName
+          - givenName
+          - objectClass
+          - mail
+      query:
+          'searchFlags:1.2.840.113556.1.4.803:' : '=8'
+
+  ambigiousobjects:
+      name: Ambigious Objects
+      alias: ambigiousobjects
+      attributes: 
+          - distinguishedName
+          - givenName
+          - objectClass
+          - mail
+      query:
+          'searchFlags:1.2.840.113556.1.4.803:' : '=4'
+
+  confidentialobjects:
+      name: Confidential Objects
+      alias: confidentialobjects
+      attributes: 
+          - distinguishedName
+          - givenName
+          - objectClass
+          - mail
+      query:
+          'searchFlags:1.2.840.113556.1.4.803:' : '=128'
+
+  grouppolicyobjects:
+      name: Group Policy Objects
+      alias: grouppolicyobjects
+      attributes: 
+          - distinguishedName
+          - name
+          - objectClass
+      query:
+          'objectCategory' : '=groupPolicyContainer'
+
+  tree:
+      name: Tree
+      alias: tree
+      attributes: 
+          - distinguishedName
+          - name
+          - objectClass
+      query:
+          'objectClass' : 'container|organizationalUnit|builtinDomain|msDS-QuotaContainer|lostAndFound'
