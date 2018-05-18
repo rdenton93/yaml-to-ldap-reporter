@@ -1,15 +1,12 @@
 {
+    "autoload":{
 
-	"autoload":{
+        "psr-4":{
+	     "Report\\":"src/"
+	 }
 
-		"psr-4":{
-
-			"Report\\":"src/"
-
-		}
-
-	},
-	"require": {
-		"symfony/yaml": "^4.0"
-	}
+    },
+    "require": {
+        "symfony/yaml": "^4.0"
+    }
 }
